@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout-app}"
+>
+  <body>
+    <section layout:fragment="content">
+      <h1 class="mb-3">Prevision de coupure</h1>
+      <form class="row align-items-end mb-5" th:action="@{/prevision}" method="get">
+        <div class="col-lg-3 col-4">
+          <label for="" class="form-label">Selectionnier la source</label>
+          <select class="form-select" name="idSource" required>
+            <option th:value="${source.id}" th:each="source : ${sources}" th:text="${source.nom}">One</option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-4">
+          <label for="" class="form-label">Inserer une date</label>
+          <input type="date" class="form-control" name="date" th:value="${date}" required />
+        </div>
+        
+        <div class="col-auto ps-lg-0 mt-lg-0 mt-3">
+          <button type="submit" class="btn btn-outline-secondary">
+            Valider
+          </button>
+        </div>
+      </form>
+
+      <div class="row mb-4" th:if="${coupure != null}">
+        <h5 class="mb-0 text-secondary">
+          <b>Source : </b><span th:text="${source.nom}">2023-01-01</span>
+        </h5>
+        <h5 class="mb-0 text-secondary">
+          <b>Date : </b><span th:text="${dateFormat}">2023-01-01</span>
+        </h5>
+        <h5 class="mb-0 text-secondary">
+          <b>Heure coupure : </b><span th:if="${coupure.heure != null}" th:text="${coupure.heure}">08:00</span>
+          <!-- <span th:unless="${coupure.heure != null}" th:text="${'Amin''ny manaraka'}">08:00</span> -->
+          <span th:unless="${coupure.heure != null}" th:text="${'Aucune coupure'}">08:00</span>
+        </h5>
+        <h5 class="mb-0 text-secondary">
+          <b>Consommation moyenne : </b><span th:text="${coupure.consommationMoyenne}">2023-01-01</span>
+        </h5>
+      </div>
+
+      <div class="table-responsive" th:if="${coupure != null}">
+        <table class="table">
+          <thead>
+            <tr class="table-secondary">
+              <th>Horaire</th>
+              <th>Capacite batterie utilisable</th>
+              <th>Puissance panneau</th>
+              <th>Consommation totale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="detail : ${coupure.details}">
+              <td th:text="${detail.heure}"></td>
+              <td th:text="${detail.capaciteBatterie + ' W'}"></td>
+              <td th:text="${detail.puissancePanneau + ' W'}"></td>
+              <td th:text="${detail.consommationTotal + ' W'}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>
